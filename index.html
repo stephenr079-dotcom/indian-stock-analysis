@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Institutional Equity Research & Dynamic Stock Analysis Engine</title>
+  <meta name="description" content="Institutional grade equity research engine for Indian listed stocks. Analyze any company by ticker with optional investor presentations & concall transcripts.">
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-logo-badge">
+          <span class="logo-circle"></span>
+          <span class="brand-name" id="brandDisplayName">Groww</span>
+        </div>
+        <div class="company-subtitles">
+          <div class="legal-name" id="headerCompanyName">Billionbrains Garage Ventures Limited</div>
+          <div class="ticker-tags">
+            <span class="ticker-chip" id="headerTickerChip">NSE / BSE</span>
+            <span class="status-chip live"><span class="pulse-dot"></span> Live Screener & Doc Intelligence</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-vitals">
+        <div class="vital-item">
+          <span class="vital-label">Current Price</span>
+          <span class="vital-value" id="headerCmp">₹180.00</span>
+        </div>
+        <div class="vital-item">
+          <span class="vital-label">Market Cap</span>
+          <span class="vital-value" id="headerMcap">₹1,12,994 Cr</span>
+        </div>
+        <div class="vital-item">
+          <span class="vital-label">Stock P/E</span>
+          <span class="vital-value highlight" id="headerPe">46.3x</span>
+        </div>
+        <div class="vital-item">
+          <span class="vital-label">ROCE / ROE</span>
+          <span class="vital-value success" id="headerRoceRoe">37.3% / 28.8%</span>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- SEARCH & DOCUMENT UPLOAD HUB -->
+    <section class="search-upload-panel">
+      <div class="search-header-text">
+        <h2 class="search-title">Input Stock & Optional Documents</h2>
+        <p class="search-subtitle">Enter any Indian company or ticker (e.g., GROWW, ANGELONE, CDSL, TCS). Optionally attach Earnings PPT, Concall Transcript, or Annual Report PDFs.</p>
+      </div>
+
+      <form id="stockAnalysisForm" class="analysis-form">
+        <div class="form-row-main">
+          <!-- Stock Search Input -->
+          <div class="input-field-group">
+            <label for="stockInput" class="input-label">Stock Name / Ticker</label>
+            <div class="search-input-box">
+              <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="stockInput" class="stock-search-input" placeholder="e.g. GROWW, ANGELONE, CDSL, TCS, HDFCBANK..." value="GROWW" required>
+            </div>
+            
+            <!-- Quick Chips -->
+            <div class="quick-chips-row">
+              <span class="chips-label">Quick select:</span>
+              <button type="button" class="quick-chip active" data-symbol="GROWW">GROWW</button>
+              <button type="button" class="quick-chip" data-symbol="ANGELONE">ANGELONE</button>
+              <button type="button" class="quick-chip" data-symbol="CDSL">CDSL</button>
+              <button type="button" class="quick-chip" data-symbol="TCS">TCS</button>
+              <button type="button" class="quick-chip" data-symbol="TATAMOTORS">TATAMOTORS</button>
+              <button type="button" class="quick-chip" data-symbol="HDFCBANK">HDFCBANK</button>
+            </div>
+          </div>
+
+          <!-- Document Upload Box -->
+          <div class="input-field-group file-field-group">
+            <label class="input-label">Optional Documents (PPT / Concall / Annual Report)</label>
+            <div class="drop-zone" id="dropZone">
+              <input type="file" id="fileInput" class="file-input-hidden" multiple accept=".pdf,.txt">
+              <div class="drop-zone-content">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div class="drop-prompt">
+                  <strong>Click or Drag & Drop PDFs</strong>
+                  <span>Supports Earnings PPT, Concall Transcript, Annual Report</span>
+                </div>
+              </div>
+            </div>
+            <!-- File previews -->
+            <div id="fileChipsContainer" class="file-chips-container"></div>
+          </div>
+        </div>
+
+        <div class="form-action-bar">
+          <button type="submit" id="analyzeSubmitBtn" class="btn-primary-analyze">
+            <span class="btn-spinner" id="analyzeSpinner"></span>
+            <span class="btn-text" id="analyzeBtnText">&#x26A1; Generate Institutional Analysis</span>
+          </button>
+          <div id="statusNotification" class="status-notification"></div>
+        </div>
+      </form>
+    </section>
+
+    <!-- DOCUMENT INSIGHTS BANNER (Visible if files parsed) -->
+    <div id="docInsightsBanner" class="doc-insights-banner" style="display: none;">
+      <div class="doc-banner-icon">&#x1F4D6;</div>
+      <div class="doc-banner-info">
+        <h4 id="docBannerTitle">Document Intelligence Active</h4>
+        <p id="docBannerDesc">Parsed management commentary, earnings call guidance, and strategic disclosures.</p>
+      </div>
+      <div id="docChipsList" class="doc-chips-list"></div>
+    </div>
+
+    <!-- 5 CORE PILLARS: HIGHEST PRIORITY HERO SECTION -->
+    <section class="core-pillars-section" id="coreSummarySection">
+      <div class="section-title-wrap">
+        <h1 class="main-heading" id="companyExecutiveTitle">Executive Decision Matrix</h1>
+        <p class="section-desc" id="companyAboutDesc">Key institutional summary answering the 5 primary investor questions for a 5–10+ year horizon.</p>
+      </div>
+
+      <div class="core-cards-grid">
+        
+        <!-- CARD 1: Business -->
+        <div class="pillar-card card-strong" id="cardBusiness">
+          <div class="card-badge-header">
+            <span class="pillar-num">01</span>
+            <span class="status-badge badge-strong" id="badgeBusiness">STRONG</span>
+          </div>
+          <h2 class="card-title">Business Moat</h2>
+          <div class="card-metric-highlight" id="businessHighlight">High Capital Return</div>
+          <p class="card-summary" id="businessSummary">
+            Industry leading operating profile with robust competitive moat, high return on capital employed, and strong pricing power.
+          </p>
+          <ul class="mini-bullet-list" id="businessBullets">
+            <li>Dominant market share & high client retention</li>
+            <li>High ROCE demonstrating superior capital efficiency</li>
+            <li>Expanding revenue through high-velocity cross-selling</li>
+          </ul>
+        </div>
+
+        <!-- CARD 2: Growth Outlook -->
+        <div class="pillar-card card-very-strong" id="cardGrowth">
+          <div class="card-badge-header">
+            <span class="pillar-num">02</span>
+            <span class="status-badge badge-very-strong" id="badgeGrowth">VERY STRONG</span>
+          </div>
+          <h2 class="card-title">Growth Outlook</h2>
+          <div class="card-metric-highlight" id="growthHighlight">Compounding Scale</div>
+          <p class="card-summary" id="growthSummary">
+            Strong top-line expansion supported by structural industry tailwinds and growing order book / customer asset base.
+          </p>
+          <ul class="mini-bullet-list" id="growthBullets">
+            <li>Robust 3-year compounded sales growth</li>
+            <li>Expanding product lines & multi-segment diversification</li>
+            <li>Management guidance confirms sustained execution runway</li>
+          </ul>
+        </div>
+
+        <!-- CARD 3: Fundamentals -->
+        <div class="pillar-card card-good" id="cardFundamentals">
+          <div class="card-badge-header">
+            <span class="pillar-num">03</span>
+            <span class="status-badge badge-good" id="badgeFundamentals">GOOD / EXCEPTIONAL</span>
+          </div>
+          <h2 class="card-title">Fundamentals (Sales & Profit)</h2>
+          <div class="card-metric-highlight" id="fundamentalsHighlight">High OPM & PAT</div>
+          <p class="card-summary" id="fundamentalsSummary">
+            High operating margins with operating leverage translating revenue into post-tax bottom-line profits.
+          </p>
+          <ul class="mini-bullet-list" id="fundamentalsBullets">
+            <li>Consistent profit expansion with zero promoter pledge</li>
+            <li>Low or zero structural debt safeguarding balance sheet</li>
+            <li>Solid interest coverage ratio ensuring solvency resilience</li>
+          </ul>
+        </div>
+
+        <!-- CARD 4: Valuation -->
+        <div class="pillar-card card-expensive" id="cardValuation">
+          <div class="card-badge-header">
+            <span class="pillar-num">04</span>
+            <span class="status-badge badge-expensive" id="badgeValuation">EXPENSIVE</span>
+          </div>
+          <h2 class="card-title">Valuation Check</h2>
+          <div class="card-metric-highlight" id="valuationHighlight">46.3x TTM P/E</div>
+          <p class="card-summary" id="valuationSummary">
+            Commands a scarcity growth premium over peers, pricing in elevated medium-term compounding expectations.
+          </p>
+          <ul class="mini-bullet-list" id="valuationBullets">
+            <li>Trading at elevated multiple to book and earnings</li>
+            <li>Requires sustained 25%+ profit compounding for 15% return</li>
+            <li>Limited margin of safety for lump-sum capital deployment</li>
+          </ul>
+        </div>
+
+        <!-- CARD 5: Investment Decision -->
+        <div class="pillar-card card-action" id="cardDecision">
+          <div class="card-badge-header">
+            <span class="pillar-num">05</span>
+            <span class="status-badge badge-action" id="badgeDecision">ACCUMULATE ON DIPS</span>
+          </div>
+          <h2 class="card-title">Investment Decision</h2>
+          <div class="card-metric-highlight" id="decisionHighlight">HOLD at CMP | BUY S1-S3</div>
+          <p class="card-summary" id="decisionSummary">
+            Do not buy lump-sum today. Use staggered 4-tranche accumulation starting at S1 support down to deep value.
+          </p>
+          <div class="action-buttons-wrap">
+            <button type="button" class="action-cta-btn" id="scrollToTranchesBtn">
+              View Staggered Buying Calculator &darr;
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- NAVIGATION TABS FOR DEEP-DIVE ANALYSIS -->
+    <nav class="dashboard-tabs-nav" aria-label="Dashboard views">
+      <button class="tab-btn active" data-tab="tab-accumulation" id="tabBtnAccumulation">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        1. Accumulation Planner
+      </button>
+      <button class="tab-btn" data-tab="tab-financials" id="tabBtnFinancials">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        2. Financial Performance & Screener
+      </button>
+      <button class="tab-btn" data-tab="tab-business" id="tabBtnBusiness">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        3. Business Engine & Order Book Visibility
+      </button>
+      <button class="tab-btn" data-tab="tab-scenarios" id="tabBtnScenarios">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        4. Bull / Base / Bear Scenarios
+      </button>
+      <button class="tab-btn" data-tab="tab-risks" id="tabBtnRisks">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        5. Risks & Invalidation Dashboard
+      </button>
+    </nav>
+
+    <!-- TAB 1: INTERACTIVE TRANCHE ACCUMULATION PLANNER -->
+    <section class="tab-pane active" id="tab-accumulation">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Interactive Capital Accumulation Planner</h3>
+            <p class="panel-subtitle">Enter your intended 10-year investment capital to generate precise rupee allocations, share counts, and trigger levels.</p>
+          </div>
+          <div class="capital-input-card">
+            <label for="capitalInput" class="capital-label">Total Planned Capital (₹):</label>
+            <div class="capital-input-wrapper">
+              <span class="currency-symbol">₹</span>
+              <input type="number" id="capitalInput" class="capital-input" value="500000" step="10000" min="10000">
+              <button type="button" id="quickPreset100k" class="preset-chip">₹1 Lakh</button>
+              <button type="button" id="quickPreset500k" class="preset-chip active">₹5 Lakh</button>
+              <button type="button" id="quickPreset1000k" class="preset-chip">₹10 Lakh</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tranche Table -->
+        <div class="table-responsive">
+          <table class="accumulation-table" id="trancheTable">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Price Zone</th>
+                <th>Allocation %</th>
+                <th>Capital to Deploy</th>
+                <th>Est. Shares to Buy</th>
+                <th>Technical / Valuation Rationale</th>
+                <th>Action Directive</th>
+              </tr>
+            </thead>
+            <tbody id="trancheTableBody">
+              <!-- Dynamically populated via app.js -->
+            </tbody>
+            <tfoot>
+              <tr class="table-summary-row">
+                <td colspan="2"><strong>Portfolio Target Plan</strong></td>
+                <td><strong>100%</strong></td>
+                <td id="totalCapitalSum">₹5,00,000</td>
+                <td id="totalEstShares">—</td>
+                <td colspan="2" id="projectedVwapText"><strong>Projected VWAP: ~₹150.50 (vs CMP ₹180.00)</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Visual Price Ladder vs CMP -->
+        <div class="price-ladder-card">
+          <h4 class="ladder-title" id="ladderTitle">Technical Support Ladder vs Current Price</h4>
+          <div class="ladder-bar-container" id="ladderContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Downside Protocol Box -->
+        <div class="downside-protocol-box">
+          <h4 class="protocol-heading">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Drawdown Playbook: Price Fall vs Fundamental Deterioration
+          </h4>
+          <div class="drawdown-grid" id="drawdownGrid">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: FINANCIAL PERFORMANCE & SCREENER.IN DATA -->
+    <section class="tab-pane" id="tab-financials">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Fundamental Financial Health (Screener.in Verified)</h3>
+            <p class="panel-subtitle">Consolidated audited figures and financial statement history.</p>
+          </div>
+          <div class="ratios-badge-row" id="ratiosBadgeRow">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Dynamic Financial History Table -->
+        <div class="table-responsive">
+          <table class="financial-table" id="financialTable">
+            <thead id="financialTableHead">
+              <!-- Dynamically populated -->
+            </thead>
+            <tbody id="financialTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Dynamic Peer Comparison Table -->
+        <h4 class="subpanel-title mt-4">Industry Peer Valuation & Efficiency Benchmarking</h4>
+        <div class="table-responsive">
+          <table class="financial-table peer-table" id="peerTable">
+            <thead id="peerTableHead">
+              <!-- Dynamically populated -->
+            </thead>
+            <tbody id="peerTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: BUSINESS ENGINE & ORDER BOOK VISIBILITY -->
+    <section class="tab-pane" id="tab-business">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Business Segments, Order Book & Revenue Visibility</h3>
+            <p class="panel-subtitle">Firm order backlog, customer asset stickiness, and multi-year execution runway.</p>
+          </div>
+        </div>
+
+        <!-- Business Engines Grid -->
+        <div class="business-engines-grid" id="businessEnginesGrid">
+          <div class="engine-box">
+            <div class="engine-icon">&#x1F4C8;</div>
+            <div class="engine-info">
+              <h5>Core Monetization Engine</h5>
+              <p>High-velocity trading, brokerage, and transaction processing with expanding operational leverage.</p>
+            </div>
+          </div>
+          <div class="engine-box">
+            <div class="engine-icon">&#x26A1;</div>
+            <div class="engine-info">
+              <h5>Margin & Lending Solutions</h5>
+              <p>Margin Trading Facility (MTF) and collateralized loans yielding predictable recurring interest income.</p>
+            </div>
+          </div>
+          <div class="engine-box">
+            <div class="engine-icon">&#x1F3E6;</div>
+            <div class="engine-info">
+              <h5>Customer Asset Accumulation</h5>
+              <p>Dominant direct mutual funds, SIP flows, and wealth advisory capturing customer lifetime value (LTV).</p>
+            </div>
+          </div>
+          <div class="engine-box">
+            <div class="engine-icon">&#x1F30E;</div>
+            <div class="engine-info">
+              <h5>Institutional & Global Expansion</h5>
+              <p>Strategic asset management manufacturing, ETFs, and cross-border international investing vehicles.</p>
+            </div>
+          </div>
+        <!-- ORDER BOOK & REVENUE VISIBILITY PANEL -->
+        <div class="orderbook-visibility-panel mt-4" id="orderbookPanel">
+          <div class="orderbook-header">
+            <div class="orderbook-title-wrap">
+              <span class="vis-badge" id="visTypeBadge">Order Book & Future Visibility</span>
+              <h4 class="vis-headline" id="visHeadline">Order Book & Revenue Visibility Analysis</h4>
+            </div>
+            <span class="runway-chip" id="visRunwayChip">2.0 – 3.5 Years Runway</span>
+          </div>
+
+          <div class="vis-metrics-grid">
+            <div class="vis-metric-card">
+              <span class="vis-label">Order Book / Sticky Assets</span>
+              <span class="vis-val highlight" id="visAmount">₹3,60,000 Cr</span>
+            </div>
+            <div class="vis-metric-card">
+              <span class="vis-label">Coverage vs TTM Revenue</span>
+              <span class="vis-val" id="visCoverage">2.4x TTM Revenue</span>
+            </div>
+            <div class="vis-metric-card">
+              <span class="vis-label">Order Inflows / Run-Rate</span>
+              <span class="vis-val success" id="visInflows">₹23,000 Cr / Qtr</span>
+            </div>
+            <div class="vis-metric-card">
+              <span class="vis-label">Revenue Visibility Runway</span>
+              <span class="vis-val purple" id="visRunway">Multi-Year Compounding</span>
+            </div>
+          </div>
+
+          <div class="vis-snippets-card" id="visSnippetsCard">
+            <h5>Extracted Management Commentary & Filings Disclosures</h5>
+            <ul id="visSnippetsList" class="vis-snippets-list">
+              <li>Direct MF AUM stands at ₹1.9 lakh crore with SIP inflows growing 32% YoY.</li>
+              <li>MTF book expanded 264.4% YoY providing high-margin predictable interest earnings.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Pros & Cons List -->
+        <div class="pros-cons-grid mt-4">
+          <div class="pros-card">
+            <h4 class="pros-title">&#x2705; Screener Strengths & Moat</h4>
+            <ul id="prosList" class="pros-list">
+              <li>Strong historical sales and profit compounding.</li>
+              <li>High return on capital employed (ROCE) and return on equity (ROE).</li>
+            </ul>
+          </div>
+          <div class="cons-card">
+            <h4 class="cons-title">&#x26A0;&#xFE0F; Screener Weaknesses & Cautions</h4>
+            <ul id="consList" class="cons-list">
+              <li>Stock is trading at elevated multiple over book value.</li>
+              <li>Earnings cyclicality tied to overall capital markets volumes.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 4: BULL / BASE / BEAR SCENARIO SIMULATOR -->
+    <section class="tab-pane" id="tab-scenarios">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">5-Year Valuation Scenario Simulator (FY26 – FY31E)</h3>
+            <p class="panel-subtitle">Mathematical valuation projection model based on current normalized earnings power.</p>
+          </div>
+        </div>
+
+        <div class="scenarios-cards-grid" id="scenariosGrid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: RISKS & QUARTERLY MONITORING DASHBOARD -->
+    <section class="tab-pane" id="tab-risks">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Institutional Risk Matrix & Quarterly Surveillance</h3>
+            <p class="panel-subtitle">Definitive threshold triggers to monitor every quarter for fundamental thesis invalidation.</p>
+          </div>
+        </div>
+
+        <div class="risks-split-layout">
+          <!-- Left: Key Risks -->
+          <div class="risk-factors-card" id="riskFactorsCard">
+            <h4>Primary Investment Risk Factors</h4>
+            
+            <div class="risk-item-row high-risk">
+              <span class="risk-badge red">HIGH RISK</span>
+              <div>
+                <strong>Regulatory & Policy Shifts:</strong> Capital market regulations, margin changes, or fee ceilings could impact transaction frequency.
+              </div>
+            </div>
+
+            <div class="risk-item-row high-risk">
+              <span class="risk-badge red">HIGH RISK</span>
+              <div>
+                <strong>Valuation De-rating:</strong> High multiple commands continuous high earnings growth; any quarterly slowdown triggers multiple contraction.
+              </div>
+            </div>
+
+            <div class="risk-item-row medium-risk">
+              <span class="risk-badge yellow">MEDIUM RISK</span>
+              <div>
+                <strong>Customer Acquisition Costs (CAC):</strong> Intensifying competitive dynamics requiring sustained marketing and promotional expenditure.
+              </div>
+            </div>
+
+            <div class="risk-item-row medium-risk">
+              <span class="risk-badge yellow">MEDIUM RISK</span>
+              <div>
+                <strong>Market Volatility Cyclicality:</strong> Downturns in underlying equity markets dampen retail trading and investor participation.
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Quarterly Surveillance Radar -->
+          <div class="radar-card">
+            <h4>Quarterly Monitoring Radar (Action Thresholds)</h4>
+            <div class="table-responsive">
+              <table class="financial-table kpi-table">
+                <thead>
+                  <tr>
+                    <th>KPI / Metric</th>
+                    <th>Current Level</th>
+                    <th>Healthy Direction</th>
+                    <th>Red Flag Exit Trigger</th>
+                  </tr>
+                </thead>
+                <tbody id="kpiRadarTableBody">
+                  <tr>
+                    <td><strong>Operating Profit Margin (OPM)</strong></td>
+                    <td id="kpiOpm">62%</td>
+                    <td>Stable / Expanding (&uarr;)</td>
+                    <td class="danger-txt">&lt; 35%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>3-Year Sales Growth</strong></td>
+                    <td id="kpiSalesGrowth">60%</td>
+                    <td>Sustained (&uarr;)</td>
+                    <td class="danger-txt">&lt; 10%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Return on Capital (ROCE)</strong></td>
+                    <td id="kpiRoce">37.3%</td>
+                    <td>High (&gt;25%)</td>
+                    <td class="danger-txt">&lt; 15%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Debt to Equity</strong></td>
+                    <td id="kpiDebtEquity">0.03x</td>
+                    <td>Minimal (&lt;0.5x)</td>
+                    <td class="danger-txt">&gt; 1.0x Unsecured</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Promoter Pledge</strong></td>
+                    <td>0.00%</td>
+                    <td>Zero Pledge</td>
+                    <td class="danger-txt">&gt; 25%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sticky Footer Bar -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <strong>Institutional Research Engine</strong> &bull; <span id="footerCompanyName">Billionbrains Garage Ventures Ltd</span> &bull; 10+ Year Long-Term Horizon
+      </div>
+      <div class="footer-right">
+        <span>Strategy: <strong>Systematic Tranche Accumulation</strong></span> &bull; 
+        <span>Decision: <strong class="text-warning" id="footerDecision">ACCUMULATE ON DIPS</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js?v=3"></script>
+</body>
+</html>
